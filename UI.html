@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Harbor &amp; Vine — powered by PrepSense</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#13392f; --green2:#1d5c49; --cream:#f7f2e9; --paper:#fffdf8; --line:#e6dcc8;
+    --ink:#23211c; --muted:#6f6a5e; --gold:#c0913f; --gold-soft:#f0e4c6;
+    --ok:#1d6f4f; --okbg:#e7f1e9; --warn:#9a6b1a; --danger:#a23b34; --dangerbg:#f6e4e1;
+    --serif:"Playfair Display",Georgia,serif; --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.55}
+  .nav{display:flex;align-items:center;gap:14px;padding:16px 28px;background:var(--green);color:#f3ecdd;position:sticky;top:0;z-index:20}
+  .brand{display:flex;align-items:center;gap:12px}
+  .crest{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;color:var(--gold)}
+  .brand h1{font-family:var(--serif);font-size:20px;margin:0;font-weight:600;letter-spacing:.3px}
+  .brand .by{font-size:11px;color:#bfae8a;letter-spacing:1.5px;text-transform:uppercase}
+  .nav .spacer{flex:1}
+  .gear{background:transparent;border:1px solid #3a5a4e;color:#e7dcc4;border-radius:10px;padding:8px 14px;cursor:pointer;font-size:13px;font-family:var(--sans)}
+  .gear:hover{border-color:var(--gold)}
+  .hero{background:linear-gradient(180deg,var(--green) 0%,var(--green2) 100%);color:#f4eddd;padding:46px 28px 64px;text-align:center}
+  .hero .kicker{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}
+  .hero h2{font-family:var(--serif);font-weight:600;font-size:40px;margin:10px 0 6px}
+  .hero p{margin:0 auto;max-width:560px;color:#d7cdb6;font-size:16px}
+  #settings{display:none;background:#0e2c24;color:#e7dcc4;border-bottom:1px solid #2c4a3f;padding:14px 28px;gap:14px;flex-wrap:wrap;align-items:center;font-size:13px}
+  #settings.show{display:flex}
+  #settings input[type=text]{flex:1;min-width:260px;background:#0a221b;border:1px solid #2c4a3f;color:#f3ecdd;border-radius:9px;padding:9px 12px;font-size:13px;font-family:var(--sans)}
+  #settings label{display:flex;align-items:center;gap:7px}
+  .layout{max-width:1080px;margin:-40px auto 40px;padding:0 22px;display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:start}
+  .card-surface{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 18px 40px -28px rgba(19,57,47,.45)}
+  .glance{padding:22px}
+  .glance h3{font-family:var(--serif);font-size:18px;margin:0 0 4px}
+  .glance .sub{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+  .stat{display:flex;align-items:baseline;justify-content:space-between;padding:12px 0;border-bottom:1px dashed var(--line)}
+  .stat:last-of-type{border-bottom:none}
+  .stat .v{font-family:var(--serif);font-size:20px;color:var(--green2);transition:color .3s}
+  .stat .v.risk{color:var(--danger)}
+  .stat .v.updated{animation:pulse 1s ease}
+  @keyframes pulse{0%{opacity:.3}100%{opacity:1}}
+  .stat .k{font-size:12.5px;color:var(--muted)}
+  .upload-section{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line)}
+  .upload-section b{color:var(--ink);font-weight:600;display:block;margin-bottom:8px;font-size:12px;letter-spacing:.4px;text-transform:uppercase}
+  .file-drop{border:2px dashed var(--line);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;background:#fff}
+  .file-drop:hover{border-color:var(--gold)}
+  .file-drop input[type=file]{display:none}
+  .file-drop .icon{font-size:24px;margin-bottom:6px}
+  .file-drop .label{font-size:12.5px;color:var(--muted)}
+  .file-drop .label span{color:var(--green2);font-weight:600}
+  .file-name{margin-top:8px;font-size:12px;color:var(--ok);font-weight:500;display:none}
+  .upload-btn{width:100%;margin-top:10px;padding:10px;background:var(--green2);color:#f4eddd;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);display:none}
+  .upload-btn:hover{background:var(--green)}
+  .glance .ask{margin-top:14px;font-size:12.5px;color:var(--muted)}
+  .glance .ask b{color:var(--ink);font-weight:600;display:block;margin-bottom:6px;font-size:12px;letter-spacing:.4px;text-transform:uppercase}
+  .glance .ask li{margin:4px 0;list-style:none;padding-left:14px;position:relative}
+  .glance .ask li:before{content:"—";position:absolute;left:0;color:var(--gold)}
+  .outcome-section{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line)}
+  .outcome-section b{color:var(--ink);font-weight:600;display:block;margin-bottom:8px;font-size:12px;letter-spacing:.4px;text-transform:uppercase}
+  .outcome-section select{width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 10px;font-size:12.5px;font-family:var(--sans);margin-bottom:8px}
+  .outcome-row{display:flex;gap:8px}
+  .outcome-row input{width:90px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:13px;font-family:var(--sans)}
+  .outcome-row button{flex:1;background:var(--green2);color:#f4eddd;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+  .outcome-row button:hover{background:var(--green)}
+  .outcome-row button:disabled{opacity:.5;cursor:not-allowed}
+  .outcome-msg{margin-top:8px;font-size:12px;color:var(--ok);min-height:14px}
+  .outcome-msg.error{color:var(--danger)}
+  .chatwrap{display:flex;flex-direction:column;min-height:560px;overflow:hidden}
+  .chathead{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .chathead .dot{width:9px;height:9px;border-radius:50%;background:var(--ok)}
+  .chathead b{font-size:14px}
+  .chathead .muted{font-size:12.5px;color:var(--muted)}
+  #chat{padding:22px;flex:1;overflow-y:auto;max-height:62vh}
+  .msg{margin:0 0 16px;display:flex}
+  .msg.user{justify-content:flex-end}
+  .bubble{padding:11px 15px;border-radius:14px;font-size:14.5px;max-width:82%;white-space:pre-wrap}
+  .user .bubble{background:var(--green2);color:#f4eddd;border-bottom-right-radius:5px}
+  .bot .bubble{background:var(--cream);border:1px solid var(--line);border-bottom-left-radius:5px}
+  .typing{color:var(--muted);font-style:italic}
+  .card{border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:90%;background:#fff}
+  .card .head{padding:15px 18px;background:linear-gradient(180deg,#fffdf8,#f7f1e6);border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:11px;flex-wrap:wrap}
+  .card .dish{font-family:var(--serif);font-size:18px;font-weight:600;flex:1;min-width:160px}
+  .card .price{font-family:var(--serif);font-size:26px;color:var(--gold);font-weight:700}
+  .pill{font-size:11.5px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:#fff}
+  .pill.policy{border-color:var(--gold);color:var(--warn);background:var(--gold-soft)}
+  .card .body{padding:15px 18px;font-size:14.5px}
+  .meta{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:10px 0 0}
+  .cites{margin:12px 0 0;padding:11px 13px;background:var(--cream);border:1px solid var(--line);border-radius:11px;font-size:12.5px}
+  .cites b{display:block;color:var(--muted);font-weight:600;font-size:11px;letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
+  .cite{display:flex;justify-content:space-between;gap:12px;padding:3px 0;border-bottom:1px dashed var(--line)}
+  .cite:last-child{border-bottom:none}
+  .cite .v{font-variant-numeric:tabular-nums;color:var(--ink)}
+  .trust{display:flex;gap:8px;flex-wrap:wrap;padding:11px 18px;border-top:1px solid var(--line);background:#fcfaf4}
+  .badge{font-size:11.5px;padding:4px 10px;border-radius:999px;border:1px solid}
+  .b-ok{color:var(--ok);border-color:#bcd9c6;background:var(--okbg)}
+  .b-danger{color:var(--danger);border-color:#e6c2bd;background:var(--dangerbg)}
+  .b-muted{color:var(--muted);border-color:var(--line);background:#fff}
+  .actions{display:flex;gap:9px;padding:13px 18px;border-top:1px solid var(--line)}
+  .actions button{flex:1;padding:9px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;font-size:13px;font-family:var(--sans)}
+  .actions button:hover{border-color:var(--green2)}
+  .actions button:disabled{opacity:.5;cursor:not-allowed}
+  .actions .approve{background:var(--green2);border-color:var(--green2);color:#f4eddd;font-weight:600}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;padding:0 22px 10px}
+  .chip{font-size:12.5px;color:var(--green2);border:1px solid var(--line);border-radius:999px;padding:7px 13px;cursor:pointer;background:#fff}
+  .chip:hover{border-color:var(--gold);background:var(--gold-soft)}
+  .composer{padding:14px 18px;border-top:1px solid var(--line);display:flex;gap:11px;background:#fcfaf4}
+  .composer input{flex:1;background:#fff;border:1px solid var(--line);color:var(--ink);border-radius:11px;padding:12px 15px;font-size:14.5px;font-family:var(--sans)}
+  .composer input:focus{outline:none;border-color:var(--gold)}
+  .composer button{background:var(--gold);border:none;color:#3a2c08;border-radius:11px;padding:0 22px;font-size:14px;cursor:pointer;font-weight:600;font-family:var(--sans)}
+  .sitefoot{text-align:center;color:var(--muted);font-size:12.5px;padding:22px}
+  @media(max-width:820px){.layout{grid-template-columns:1fr;margin-top:-30px}.glance{order:2}.hero h2{font-size:32px}}
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">
+      <div class="crest">H&amp;V</div>
+      <div>
+        <h1>Harbor &amp; Vine</h1>
+        <div class="by">Powered by PrepSense</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <button class="gear" onclick="document.getElementById('settings').classList.toggle('show')">Settings</button>
+  </nav>
+
+  <div id="settings">
+    <label><input type="checkbox" id="demoMode"/> Demo mode (no n8n needed)</label>
+    <input type="text" id="webhookUrl" value="https://praneetha.app.n8n.cloud/webhook/6fe1f4af-1612-43ff-891b-e498bfda69f9" placeholder="n8n webhook URL"/>
+    <span style="color:#bfae8a">Check demo mode to use mock data without n8n.</span>
+  </div>
+
+  <header class="hero">
+    <div class="kicker">Coastal kitchen · est. 2026</div>
+    <h2>Tonight's service, decided by your data.</h2>
+    <p>Upload your inventory CSV and ask PrepSense what to run tonight — grounded in your own sales history.</p>
+  </header>
+
+  <div class="layout">
+    <aside class="glance card-surface">
+      <h3>Tonight at a glance</h3>
+      <div class="sub" id="glanceDate">Upload a CSV to begin</div>
+      <div class="stat"><span class="k">Most at risk</span><span class="v risk" id="statRisk">—</span></div>
+      <div class="stat"><span class="k">Last item discussed</span><span class="v" id="statItem" style="font-size:15px">—</span></div>
+      <div class="stat"><span class="k">Tonight's weather</span><span class="v" id="statWeather" style="font-size:16px">—</span></div>
+
+      <div class="upload-section">
+        <b>Upload Inventory CSV</b>
+        <div class="file-drop" onclick="document.getElementById('csvFile').click()">
+          <input type="file" id="csvFile" accept=".csv" onchange="onFileSelected(this)"/>
+          <div class="icon">📄</div>
+          <div class="label">Drop CSV here or <span>browse</span></div>
+        </div>
+        <div class="file-name" id="fileName"></div>
+        <button class="upload-btn" id="uploadBtn" onclick="uploadAndAnalyze()">Analyze Inventory →</button>
+      </div>
+
+      <div class="ask">
+        <b>Then ask</b>
+        <li>What should I run tonight?</li>
+        <li>Top 3 specials</li>
+        <li>What should I replenish?</li>
+        <li>I have 15-day-old salmon</li>
+      </div>
+
+      <div class="outcome-section">
+        <b>Report Last Night's Results</b>
+        <select id="outcomeSelect">
+          <option value="">Loading approved specials…</option>
+        </select>
+        <div class="outcome-row">
+          <input type="number" id="outcomePct" min="0" max="100" placeholder="Clearance %"/>
+          <button id="outcomeSubmitBtn" onclick="submitOutcome()">Submit</button>
+        </div>
+        <div class="outcome-msg" id="outcomeMsg"></div>
+      </div>
+    </aside>
+
+    <section class="chatwrap card-surface">
+      <div class="chathead"><span class="dot"></span><b>PrepSense</b><span class="muted">· margin-defense assistant</span></div>
+      <main id="chat"></main>
+      <div class="chips" id="chips"></div>
+      <footer class="composer">
+        <input id="input" placeholder="Upload your CSV first, then ask PrepSense…" onkeydown="if(event.key==='Enter')send()"/>
+        <button onclick="send()">Send</button>
+      </footer>
+    </section>
+  </div>
+
+  <footer class="sitefoot">Harbor &amp; Vine · 14 Wharf Street · A PrepSense demonstration</footer>
+
+<script>
+const chat = document.getElementById('chat');
+const chips = document.getElementById('chips');
+const WEBHOOK = 'https://praneetha.app.n8n.cloud/webhook/6fe1f4af-1612-43ff-891b-e498bfda69f9';
+let uploadedFile = null;
+
+const SUGGEST = [
+  "What should I run tonight?",
+  "Top 3 specials for tonight",
+  "Why that price?",
+  "I have 15-day-old salmon, what special?",
+  "What should I replenish?"
+];
+SUGGEST.forEach(s => {
+  const c = document.createElement('div');
+  c.className = 'chip';
+  c.textContent = s;
+  c.onclick = () => sendMessage(s);
+  chips.appendChild(c);
+});
+
+function onFileSelected(input) {
+  const file = input.files[0];
+  if (!file) return;
+  uploadedFile = file;
+  const fn = document.getElementById('fileName');
+  fn.textContent = '✓ ' + file.name;
+  fn.style.display = 'block';
+  document.getElementById('uploadBtn').style.display = 'block';
+}
+
+async function uploadAndAnalyze() {
+  if (!uploadedFile) { addBotText('Please select a CSV file first.'); return; }
+  const msg = document.getElementById('input').value.trim() || 'What should I run tonight?';
+  await sendMessage(msg);
+}
+
+// ── Sends ANY message to the webhook (chips, composer, AND the Approve button) ──
+async function sendMessage(text) {
+  if (!text) return;
+  addUser(text);
+  typing();
+  const demo = document.getElementById('demoMode').checked;
+  if (demo) { setTimeout(() => render(mock(text)), 700); return; }
+  const url = document.getElementById('webhookUrl').value.trim() || WEBHOOK;
+  try {
+    const fd = new FormData();
+    if (uploadedFile) fd.append('data', uploadedFile, uploadedFile.name);
+    fd.append('message', text);
+    const r = await fetch(url, { method: 'POST', body: fd });
+    const data = await r.json();
+    render(data);
+  } catch(e) {
+    clearTyping();
+    addBotText('Could not reach the workflow: ' + e.message);
+  }
+}
+
+async function send() {
+  const inp = document.getElementById('input');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  await sendMessage(text);
+}
+
+function esc(s) { return (String(s == null ? '' : s)).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+function addUser(t) { const d = document.createElement('div'); d.className = 'msg user'; d.innerHTML = `<div class="bubble">${esc(t)}</div>`; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; }
+function addBotText(t) { const d = document.createElement('div'); d.className = 'msg bot'; d.innerHTML = `<div class="bubble">${esc(t)}</div>`; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; }
+function typing() { const d = document.createElement('div'); d.className = 'msg bot'; d.id = 'typing'; d.innerHTML = `<div class="bubble typing">PrepSense is reasoning over your data…</div>`; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; }
+function clearTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
+
+function trustBadges(tr) {
+  if (!tr) return '';
+  const g = tr.grounding_pass ? '<span class="badge b-ok">Grounded ✓</span>' : '<span class="badge b-danger">Grounding fail ✗</span>';
+  const s = tr.safety_pass ? '<span class="badge b-ok">Safe ✓</span>' : '<span class="badge b-danger">Safety block ✗</span>';
+  const c = tr.chargeable_score != null ? `<span class="badge b-muted">Chargeable ${tr.chargeable_score}/5</span>` : '';
+  const h = tr.helpful_score != null ? `<span class="badge b-muted">Helpful ${tr.helpful_score}/5</span>` : '';
+  const j = tr.hard_fail ? '<span class="badge b-danger">Judge: blocked</span>' : '<span class="badge b-ok">Judge: passed</span>';
+  return `<div class="trust">${g}${s}${c}${h}${j}</div>`;
+}
+
+// ── Updates the LEFT SIDEBAR with real data from the latest response ──
+function updateGlance(res) {
+  const dateEl = document.getElementById('glanceDate');
+  const riskEl = document.getElementById('statRisk');
+  const itemEl = document.getElementById('statItem');
+  const weatherEl = document.getElementById('statWeather');
+
+  if (res.grounded_context) {
+    const gc = res.grounded_context;
+    if (gc.today && gc.day_of_week) {
+      dateEl.textContent = gc.day_of_week + ', ' + gc.today + ' · dinner service';
+    }
+    if (gc.tonight_weather) {
+      weatherEl.textContent = gc.tonight_weather.label || '—';
+      weatherEl.classList.add('updated');
+      setTimeout(() => weatherEl.classList.remove('updated'), 1000);
+    }
+  }
+  if (res.recommendation) {
+    if (res.recommendation.value_at_risk != null) {
+      riskEl.textContent = '$' + res.recommendation.value_at_risk;
+      riskEl.classList.add('updated');
+      setTimeout(() => riskEl.classList.remove('updated'), 1000);
+    }
+    if (res.recommendation.dish) {
+      itemEl.textContent = res.recommendation.dish;
+      itemEl.classList.add('updated');
+      setTimeout(() => itemEl.classList.remove('updated'), 1000);
+    }
+  }
+}
+
+let lastRecId = null;
+
+function renderCard(r, tr, intro, banditMode, recId) {
+  lastRecId = recId || lastRecId;
+  const d = document.createElement('div'); d.className = 'msg bot';
+  const cites = (r.citations || []).map(c => `<div class="cite"><span>${esc(c.claim)}</span><span class="v">${esc(c.value)}</span></div>`).join('');
+  const clr = (r.projected_clearance_low_pct != null) ? `${r.projected_clearance_low_pct}–${r.projected_clearance_high_pct}% projected clearance` : 'clearance: judgment call (thin history)';
+  const policy = banditMode ? `<span class="pill policy">price policy: ${esc(banditMode)}</span>` : '';
+  const btnId = 'approveBtn_' + Date.now();
+  d.innerHTML = `
+    ${intro ? `<div class="bubble" style="margin-bottom:10px">${esc(intro)}</div>` : ''}
+    <div class="card">
+      <div class="head">
+        <span class="dish">${esc(r.dish)}</span>
+        <span class="price">$${r.special_price}</span>
+        <span class="pill">${r.portion_oz} oz</span>
+        <span class="pill">${esc(r.channel)}</span>
+        ${policy}
+      </div>
+      <div class="body">
+        ${esc(r.rationale)}
+        <div class="meta"><span>${clr}</span><span>~$${r.value_at_risk} at risk if nothing runs</span></div>
+        ${cites ? `<div class="cites"><b>Grounded in your own data</b>${cites}</div>` : ''}
+      </div>
+      ${trustBadges(tr)}
+      <div class="actions">
+        <button class="approve" id="${btnId}" onclick="approveSpecial('${btnId}')">Approve &amp; run</button>
+        <button onclick="sendMessage('What should I change about this recommendation?')">Edit</button>
+        <button onclick="sendMessage('Skip this item, show me the next best option')">Skip</button>
+      </div>
+    </div>`;
+  chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
+}
+
+// ── Approve button now ACTUALLY sends to the webhook ──
+function approveSpecial(btnId) {
+  const btn = document.getElementById(btnId);
+  if (btn) { btn.disabled = true; btn.textContent = 'Approving…'; }
+  sendMessage('Approve and run');
+}
+
+function render(res) {
+  clearTyping();
+  updateGlance(res);
+  if (res.reply_type === 'recommendation' && res.recommendation) {
+    renderCard(res.recommendation, res.trust, res.message, res.bandit_mode, res.rec_id);
+  } else {
+    addBotText(res.message || JSON.stringify(res));
+  }
+}
+
+// ── MOCK DATA — used when demo mode is ON ──
+function mock(text) {
+  const t = text.toLowerCase();
+  if (t.includes('approve')) {
+    return { reply_type: 'info', message: "Logged — Salmon at $24, approved." };
+  }
+  if (t.includes('15') && t.includes('salmon')) {
+    return { reply_type: 'refusal', message: "I can't recommend selling that salmon — it's well past the 3-day safe-to-sell window. Discard it and log the loss.", trust: { grounding_pass: true, safety_pass: true, hard_fail: false } };
+  }
+  if (t.includes('top 3')) {
+    return { reply_type: 'info', message: "Top 3 specials tonight:\n\n1. Pan-Seared Atlantic Salmon — $24 (6 oz). 22 lb aging, $264 at risk. 94–96% past clearance.\n2. Seared Sea Scallops — $29 (5 oz). 6 lb aging, $132 at risk.\n3. Grilled Pork Chop — $22 (8 oz). 10 lb aging, $60 at risk." };
+  }
+  if (t.includes('replenish') || t.includes('reorder')) {
+    return { reply_type: 'info', message: "Replenishment schedule:\n\n• Heirloom Tomatoes — next delivery 2026-06-06\n• Asparagus — next delivery 2026-06-06\n• Atlantic Salmon — next delivery 2026-06-08 (Mon, Thu)\n• Beef Tenderloin — next delivery 2026-06-09" };
+  }
+  return {
+    reply_type: 'recommendation',
+    message: "You've got 7 items aging — here's the one worth acting on tonight:",
+    bandit_mode: "exploit",
+    rec_id: "demo123",
+    grounded_context: {
+      today: "2026-06-05", day_of_week: "Friday",
+      tonight_weather: { label: "Partly cloudy" }
+    },
+    recommendation: {
+      dish: "Pan-Seared Atlantic Salmon", special_price: 24, portion_oz: 6,
+      channel: "In-store + DoorDash", projected_clearance_low_pct: 92, projected_clearance_high_pct: 96,
+      rationale: "You have 22 lb of salmon at Day 2 of a 3-day window — $264 at risk. Run it at $24 (best-known price): last 3 Fridays cleared 94–96% at $24–$23, at a $7.45 plate cost = 69% margin.",
+      citations: [{ claim: "salmon on hand", value: "22 lb" }, { claim: "age vs safe window", value: "Day 2 of 3" }, { claim: "value at risk", value: "$264" }],
+      value_at_risk: 264
+    },
+    trust: { grounding_pass: true, safety_pass: true, chargeable_score: 5, helpful_score: 5, hard_fail: false }
+  };
+}
+
+addBotText("Evening. Upload your inventory CSV on the left, then ask me what to run tonight.");
+
+// ── OUTCOME REPORTING — separate from main chat ──
+const SUPABASE_URL = 'https://xwzurlnigyozbtqwsfvn.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3enVybG5pZ3lvemJ0cXdzZnZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MzMzNDgsImV4cCI6MjA5NzQwOTM0OH0._E6TqWErHfx2C7MjIG5LBYjrO0SDUEfsrg0hcoc9Tzc';
+
+async function loadApprovedSpecials() {
+  const sel = document.getElementById('outcomeSelect');
+  try {
+    const url = SUPABASE_URL + '/rest/v1/approved_specials?status=eq.approved&select=id,dish,price,approved_at&order=approved_at.desc&limit=10&apikey=' + SUPABASE_ANON_KEY;
+    const r = await fetch(url, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } });
+    const rows = await r.json();
+    if (!rows || rows.length === 0) {
+      sel.innerHTML = '<option value="">No approved specials yet</option>';
+      return;
+    }
+    sel.innerHTML = rows.map(row => {
+      const d = new Date(row.approved_at);
+      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ', ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      return `<option value="${row.id}">${esc(row.dish)} — $${row.price} — ${dateStr}</option>`;
+    }).join('');
+  } catch (e) {
+    sel.innerHTML = '<option value="">Could not load specials</option>';
+  }
+}
+loadApprovedSpecials();
+
+async function submitOutcome() {
+  const sel = document.getElementById('outcomeSelect');
+  const pctInput = document.getElementById('outcomePct');
+  const msgEl = document.getElementById('outcomeMsg');
+  const btn = document.getElementById('outcomeSubmitBtn');
+
+  const recRowId = sel.value;
+  const pct = pctInput.value;
+
+  msgEl.textContent = '';
+  msgEl.classList.remove('error');
+
+  if (!recRowId) { msgEl.textContent = 'Select a special first.'; msgEl.classList.add('error'); return; }
+  if (pct === '' || pct < 0 || pct > 100) { msgEl.textContent = 'Enter a clearance % between 0-100.'; msgEl.classList.add('error'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  try {
+    const url = document.getElementById('webhookUrl').value.trim() || WEBHOOK;
+    const fd = new FormData();
+    fd.append('report_type', 'outcome');
+    fd.append('rec_row_id', recRowId);
+    fd.append('clearance_pct', pct);
+    fd.append('message', '');
+    const r = await fetch(url, { method: 'POST', body: fd });
+    const data = await r.json();
+    msgEl.textContent = data.message || 'Logged.';
+    pctInput.value = '';
+    loadApprovedSpecials();
+  } catch (e) {
+    msgEl.textContent = 'Could not submit: ' + e.message;
+    msgEl.classList.add('error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit';
+  }
+}
+</script>
+</body>
+</html>
