@@ -1,0 +1,670 @@
+{
+  "name": "PrepsenseAI final",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fc6dc735-8320-4979-bf49-de32ea16c30e",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "57445e3a-e265-4e58-82c7-fb2a19cd7018",
+      "name": "Chat webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -4896,
+        640
+      ],
+      "webhookId": "fc6dc735-8320-4979-bf49-de32ea16c30e"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $('Chat webhook').first().json.body || {};\nconst m = body.message || '';\nconst report_type = body.report_type || null;\nconst rec_row_id = body.rec_row_id || null;\nconst clearance_pct = body.clearance_pct != null ? Number(body.clearance_pct) : null;\n\nreturn [{ json:{\n  message: String(m),\n  report_type: report_type,\n  rec_row_id: rec_row_id,\n  clearance_pct: clearance_pct,\n  location: { lat:40.71, lon:-74.01, name:'Midtown (NYC stand-in)' },\n  today: '2026-06-05',\n  day_of_week: 'Friday',\n  restaurant: 'Harbor & Vine',\n  models: { router:'gpt-4o', recommender:'gpt-4o', judge:'gpt-4o' },\n  specials: [\n    {date:'2026-04-24',featured_ingredient:'Atlantic Salmon',dish:'Pan-Seared Atlantic Salmon',special_price:25,portion_oz:6,qty_prepped:48,qty_sold:40,clearance_pct:83,channel:'In-store',outcome_notes:'First salmon special; priced high at $25, slower clear'},\n    {date:'2026-05-08',featured_ingredient:'Atlantic Salmon',dish:'Pan-Seared Atlantic Salmon',special_price:24,portion_oz:6,qty_prepped:55,qty_sold:52,clearance_pct:95,channel:'In-store + DoorDash',outcome_notes:'Cleared fast - sold out by 8pm'},\n    {date:'2026-05-22',featured_ingredient:'Atlantic Salmon',dish:'Pan-Seared Atlantic Salmon',special_price:24,portion_oz:6,qty_prepped:52,qty_sold:49,clearance_pct:94,channel:'In-store + DoorDash',outcome_notes:'Strong again at $24'},\n    {date:'2026-05-29',featured_ingredient:'Atlantic Salmon',dish:'Pan-Seared Atlantic Salmon',special_price:23,portion_oz:6,qty_prepped:50,qty_sold:48,clearance_pct:96,channel:'In-store + DoorDash',outcome_notes:'Best yet - $23 cleared 96%'},\n    {date:'2026-05-03',featured_ingredient:'Sea Scallops',dish:'Seared Sea Scallops',special_price:29,portion_oz:5,qty_prepped:24,qty_sold:20,clearance_pct:83,channel:'In-store + DoorDash',outcome_notes:'Decent for a Sunday'},\n    {date:'2026-05-31',featured_ingredient:'Sea Scallops',dish:'Seared Sea Scallops',special_price:28,portion_oz:5,qty_prepped:26,qty_sold:22,clearance_pct:85,channel:'In-store',outcome_notes:'Solid'},\n    {date:'2026-05-10',featured_ingredient:'Pork Chop',dish:'Grilled Pork Chop',special_price:21,portion_oz:8,qty_prepped:22,qty_sold:15,clearance_pct:68,channel:'In-store',outcome_notes:'Mediocre clearance midweek-ish'},\n    {date:'2026-05-13',featured_ingredient:'Pork Chop',dish:'Grilled Pork Chop',special_price:22,portion_oz:8,qty_prepped:25,qty_sold:18,clearance_pct:72,channel:'In-store',outcome_notes:'Better than $21 run, oddly'}\n  ],\n  menu: [\n    {dish:'Pan-Seared Atlantic Salmon',category:'Entree - Seafood',menu_price:29,plate_cost:7.45,gross_margin_pct:74},\n    {dish:'Seared Sea Scallops',category:'Entree - Seafood',menu_price:34,plate_cost:11.34,gross_margin_pct:67},\n    {dish:'Gulf Shrimp Linguine',category:'Entree - Seafood',menu_price:26,plate_cost:6.35,gross_margin_pct:76},\n    {dish:'Pan-Roasted Halibut',category:'Entree - Seafood',menu_price:33,plate_cost:9.63,gross_margin_pct:71},\n    {dish:'PEI Mussels & Frites',category:'Entree - Seafood',menu_price:21,plate_cost:7.64,gross_margin_pct:64},\n    {dish:'Beef Tenderloin',category:'Entree - Meat',menu_price:42,plate_cost:10.5,gross_margin_pct:75},\n    {dish:'Grilled Pork Chop',category:'Entree - Meat',menu_price:27,plate_cost:5.27,gross_margin_pct:80},\n    {dish:'Seared Duck Breast',category:'Entree - Meat',menu_price:31,plate_cost:8.93,gross_margin_pct:71},\n    {dish:'Wild Mushroom Risotto',category:'Entree - Vegetarian',menu_price:22,plate_cost:4.55,gross_margin_pct:79},\n    {dish:'Burrata & Heirloom Tomato',category:'Appetizer',menu_price:16,plate_cost:5.45,gross_margin_pct:66},\n    {dish:'Arugula Salad',category:'Appetizer',menu_price:13,plate_cost:2.52,gross_margin_pct:81},\n    {dish:'Crispy Calamari',category:'Appetizer',menu_price:15,plate_cost:3.61,gross_margin_pct:76},\n    {dish:'Ahi Tuna Crudo',category:'Appetizer',menu_price:18,plate_cost:6.62,gross_margin_pct:63}\n  ],\n  rules: [\n    {category:'Seafood',aging_threshold_days:2,safe_to_sell_max_days:3,margin_floor:'35%',max_markdown:'30%',action_when_past_safe:'Staff meal or donate - NEVER sell past safe age'},\n    {category:'Meat',aging_threshold_days:4,safe_to_sell_max_days:6,margin_floor:'35%',max_markdown:'30%',action_when_past_safe:'Staff meal or donate past safe age'},\n    {category:'Produce',aging_threshold_days:4,safe_to_sell_max_days:6,margin_floor:'30%',max_markdown:'40%',action_when_past_safe:'Compost or donate past safe age'},\n    {category:'Dairy',aging_threshold_days:8,safe_to_sell_max_days:12,margin_floor:'35%',max_markdown:'25%',action_when_past_safe:'Staff meal past safe age'}\n  ],\n  channels: [\n    {channel:'In-store / Dine-in',commission:'0%',when_to_use:'Best for high-value proteins'},\n    {channel:'DoorDash',commission:'27%',when_to_use:'Use to add volume when in-store demand is thin'},\n    {channel:'Uber Eats',commission:'30%',when_to_use:'Highest reach, lowest margin'},\n    {channel:'Staff Meal',commission:'100% cost',when_to_use:'For items past safe-to-sell age'},\n    {channel:'Donation',commission:'Tax write-off',when_to_use:'For edible items past sell threshold'}\n  ],\n  replenishment: [\n    {ingredient:'Atlantic Salmon',next_delivery:'2026-06-08',standing_days:'Mon, Thu'},\n    {ingredient:'Sea Scallops',next_delivery:'2026-06-08',standing_days:'Mon, Thu'},\n    {ingredient:'Pork Chop',next_delivery:'2026-06-09',standing_days:'Tue'},\n    {ingredient:'Heirloom Tomatoes',next_delivery:'2026-06-06',standing_days:'Tue, Thu, Sat'},\n    {ingredient:'Asparagus',next_delivery:'2026-06-06',standing_days:'Tue, Thu, Sat'},\n    {ingredient:'Arugula',next_delivery:'2026-06-06',standing_days:'Tue, Thu, Sat'}\n  ]\n}}];"
+      },
+      "id": "651746d5-d535-4158-a615-202e4031d078",
+      "name": "Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3952,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.open-meteo.com/v1/forecast?latitude={{ $json.location.lat }}&longitude={{ $json.location.lon }}&current=temperature_2m,weather_code,precipitation&temperature_unit=fahrenheit&timezone=auto",
+        "options": {}
+      },
+      "id": "xxxx",
+      "name": "Weather (Open-Meteo)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3312,
+        608
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const cfg=$('Config').first().json;\nreturn [{ json:{ system:\"You are the router for PrepSense, an assistant for an independent restaurant. Read the operator's message and return ONLY json: {\\\"intent\\\":\\\"tonight_special|why_explanation|inventory_status|menu_question|replenishment_question|weather_question|out_of_scope\\\",\\\"item\\\":string|null,\\\"claimed_days_on_hand\\\":number|null,\\\"count\\\":number|null,\\\"confidence\\\":0..1}. item = any ingredient or dish named; else null. claimed_days_on_hand = a number ONLY if an age is stated ('15-day-old salmon' -> 15); else null. count = how many specials requested ('top 3 specials' -> 3); else null. intent: what to run/price/special tonight, OR any message that names a SPECIFIC ingredient or dish (e.g. 'what about the salmon', 'what about the calamari') -> tonight_special; 'why/explain' -> why_explanation; see stock / what's aging / inventory (no specific item named) -> inventory_status; asking for the FULL menu or list of dishes (no specific item named) -> menu_question; what to reorder/replenish/restock -> replenishment_question; weather's role -> weather_question; not about this restaurant -> out_of_scope. IMPORTANT: if a specific ingredient or dish is named in the message, default to tonight_special unless the operator is clearly asking to reorder it, asking why, or asking about the full menu/inventory list. Never answer; only classify and extract. Respond with ONLY a JSON object - no prose, no markdown, no code fences.\", user: cfg.message || 'What should I run tonight?' } }];"
+      },
+      "id": "6367d692-755d-46e9-b22c-3cb945ccaa72",
+      "name": "Build router request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2944,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.user }}",
+        "options": {
+          "systemMessage": "={{ $json.system }}"
+        }
+      },
+      "id": "c00a086f-1b0c-4b73-bf21-f556edb5b627",
+      "name": "Router agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -2656,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "id": "6e63cfba-1387-441b-9982-d6e932a426c6",
+      "name": "Model · router (gpt-4o)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -2512,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "function PJ(s){if(s==null)return null;if(typeof s==='object')return s;s=String(s).trim().replace(/^```(json)?/i,'').replace(/```$/,'').trim();try{return JSON.parse(s);}catch(e){}var a=s.indexOf('{'),b=s.lastIndexOf('}');if(a>=0&&b>a){try{return JSON.parse(s.slice(a,b+1));}catch(e){}}return null;}\nvar raw=(($json.output!=null)?$json.output:($json.text!=null?$json.text:''));\nvar c=PJ(raw)||{};\nvar msg=$('Config').first().json.message; var m=String(msg).toLowerCase();\nvar intent=c.intent||'tonight_special'; var item=c.item||null;\nvar days=(c.claimed_days_on_hand!=null)?Number(c.claimed_days_on_hand):null;\nvar count=(c.count!=null)?Number(c.count):null;\nif(count==null){ var mm=m.match(/(top\\s*)?(\\d+)\\s*(specials|recommendations|options|ideas|dishes|items)/); if(mm) count=Number(mm[2]); }\nif(count==null && /top\\s*(three|3)/.test(m)) count=3;\nif(days==null){ var dm2=m.match(/(\\d+)\\s*[- ]?\\s*day/); if(dm2) days=Number(dm2[1]); }\nif(/^(approve|approved|yes approve|confirm|go ahead|run it|sounds good|do it|let's do it|lock it in)\\b/.test(m.trim())){\n  intent='approval';\n}\nif(intent==='tonight_special' && days==null && count==null){\n  if(/(replenish|reorder|re-order|restock|order more)/.test(m)) intent='replenishment_question';\n  else if(/(inventory|stock level|what.{0,8}aging|whats aging)/.test(m)) intent='inventory_status';\n  else if(/menu/.test(m) && /(what|which|list|other|show|items|on the|details)/.test(m)) intent='menu_question';\n  else if(/weather/.test(m)) intent='weather_question';\n  else if(/\\bwhy\\b/.test(m)) intent='why_explanation';\n}\nreturn [{ json:{ intent, item, claimed_days_on_hand:days, count, message:msg } }];"
+      },
+      "id": "33cd07fc-38ec-4938-be53-e0dcced8ecf1",
+      "name": "Parse intent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2272,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "var L; try{ L=$('Load restaurant data').first().json; }catch(e){ return [{json:{error:'Load restaurant data: '+e.message}}]; }\nconst D=(L&&L.data)?L.data:L;\nvar r; try{ r=$('Parse intent').first().json; }catch(e){ return [{json:{error:'Parse intent: '+e.message}}]; }\nvar wraw; try{ wraw=($('Weather (Open-Meteo)').first().json||{}).current||{}; }catch(e){ wraw={}; }\nvar banditLive=[]; try{ banditLive=$('Fetch Price Bandit Data').all().map(function(i){return i.json;}).filter(function(x){return x && x.ingredient && x.price!=null;}); }catch(e){ banditLive=[]; }\nconst inv=D.inventory||[], menu=D.menu||[], rules=D.rules||[], specials=D.specials||[], channels=D.channels||[], repl=D.replenishment||[];\nconst msg=String(r.message||'').toLowerCase();\nfunction nrm(s){return String(s||'').toLowerCase().replace(/[^a-z ]/g,'').trim();}\nfunction first(s){return nrm(s).split(' ')[0];}\nfunction ruleOf(c){return rules.find(x=>x.category===c)||{};}\nfunction safeOf(it){var ru=ruleOf(it.category);return (it.safe!=null)?Number(it.safe):Number(ru.safe_to_sell_max_days);}\nfunction thrOf(it){var ru=ruleOf(it.category);return (it.thr!=null)?Number(it.thr):Number(ru.aging_threshold_days);}\nfunction statusFor(it){var d=Number(it.days_on_hand)||0; if(d>=safeOf(it))return 'PAST SAFE'; if(d>=thrOf(it))return 'AGING'; return 'Fresh';}\nvar BUF={Seafood:0,Meat:1,Produce:2,Dairy:2,Dry:60};\nfunction disp(it){var days=Number(it.days_on_hand)||0,safe=safeOf(it); var dm=safe+((BUF[it.category]!=null)?BUF[it.category]:1);\n  if(days<=safe)return 'sell'; if(days<=dm)return 'donate'; return 'discard';}\nfunction dishFor(ing){var sp=specials.find(s=>s.featured_ingredient===ing); if(sp)return sp.dish;\n  var k=first(ing),mm=menu.find(d=>nrm(d.dish).includes(k)); return mm?mm.dish:null;}\nfunction plateOf(dish){return menu.find(d=>d.dish===dish)||null;}\nfunction specialsFor(ing){return specials.filter(s=>s.featured_ingredient===ing);}\nfunction catOf(ing){var it=inv.find(i=>i.ingredient===ing); return it?it.category:null;}\nfunction ingInMsg(){for(var i=0;i<inv.length;i++){var w=nrm(inv[i].ingredient).split(' ');for(var j=0;j<w.length;j++){if(w[j].length>3 && msg.indexOf(w[j])>=0)return inv[i].ingredient;}}return null;}\nfunction seedArms(ing){var sp=specialsFor(ing); var map={};\n  sp.forEach(function(s){var p=s.special_price; if(p==null)return; var cl=(s.clearance_pct||0)/100; var reward=cl*p;\n    if(!map[p]) map[p]={price:p,trials:0,reward_sum:0}; map[p].trials++; map[p].reward_sum+=reward;});\n  return Object.keys(map).map(function(k){return map[k];});}\nfunction mergeArms(seed,ing){var m={}; seed.forEach(function(a){m[a.price]=Object.assign({},a);});\n  banditLive.filter(function(a){return a.ingredient===ing;}).forEach(function(a){var p=Number(a.price);\n    if(!m[p]) m[p]={price:p,trials:0,reward_sum:0}; m[p].trials+=Number(a.trials)||0; m[p].reward_sum+=Number(a.reward_sum)||0;});\n  return Object.keys(m).map(function(k){return m[k];});}\nfunction pickPrice(ing){var mi=plateOf(dishFor(ing))||{}; var plate=Number(mi.plate_cost)||0; var menuP=Number(mi.menu_price)||0;\n  var floorFrac=parseFloat(String(ruleOf(catOf(ing)).margin_floor||'35%').replace('%',''))/100;\n  var floorPrice=Math.ceil(plate/(1-floorFrac));\n  var arms=mergeArms(seedArms(ing),ing).filter(function(a){return a.trials>0 && a.price>=floorPrice && a.price<=menuP;});\n  if(arms.length===0) return null;\n  var scored=arms.map(function(a){return {price:a.price,trials:a.trials,mean:Math.round((a.reward_sum/a.trials)*100)/100};});\n  var best=scored.slice().sort(function(x,y){return y.mean-x.mean;})[0];\n  var under=scored.slice().filter(function(a){return a.price!==best.price;}).sort(function(x,y){return x.trials-y.trials;})[0];\n  return {price:best.price, mode:(best.trials>=2?'exploit':'explore'), mean_reward:best.mean, trials:best.trials, explore_next:(under?under.price:null), arms:scored};}\nconst WC={0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Light drizzle',53:'Drizzle',55:'Drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Snow',73:'Snow',75:'Heavy snow',80:'Rain showers',81:'Rain showers',82:'Heavy showers',95:'Thunderstorm'};\nconst weather={label:(WC[wraw.weather_code]!==undefined?WC[wraw.weather_code]:'Unknown'), temp_f:(wraw.temperature_2m!=null?wraw.temperature_2m:null), precipitation:(wraw.precipitation!=null?wraw.precipitation:null)};\nconst itemName = r.item || ingInMsg();\nlet target=null, notFound=false;\nif(itemName){\n  target=inv.find(i=> nrm(i.ingredient).includes(nrm(itemName)) || nrm(itemName).includes(first(i.ingredient)) );\n  if(!target){ var md=menu.find(d=>nrm(d.dish).includes(nrm(itemName))); if(md){ target=inv.find(i=>nrm(md.dish).includes(first(i.ingredient)))||null; } }\n  if(!target && r.item) notFound=true;\n}\nif(target && r.claimed_days_on_hand!=null) target=Object.assign({},target,{days_on_hand:r.claimed_days_on_hand});\nif(target) target=Object.assign({},target,{status:statusFor(target),disposition:disp(target)});\nfunction buildSpecial(it){\n  var dish=dishFor(it.ingredient); var mi=plateOf(dish)||{}; var sp=specialsFor(it.ingredient);\n  var floor=parseFloat(String(ruleOf(it.category).margin_floor||'35%').replace('%',''))/100;\n  var bp=pickPrice(it.ingredient); var price, lo=null, hi=null, portion=6, mode=null;\n  if(bp){ price=bp.price; mode=bp.mode; } else { price=Math.max(1,Math.round((mi.menu_price||0)*0.85)); }\n  if(sp.length>0){ var cl=sp.map(function(s){return s.clearance_pct;}).filter(function(x){return x!=null;}); lo=Math.min.apply(null,cl); hi=Math.max.apply(null,cl); portion=(sp[0].portion_oz||6); }\n  var plate=Number(mi.plate_cost)||0; if(price>0 && plate>0){ var minP=Math.ceil(plate/(1-floor)); if(price<minP) price=minP; }\n  return {dish:(dish||it.ingredient),ingredient:it.ingredient,special_price:price,portion_oz:portion,channel:'In-store + DoorDash',bandit_mode:mode,\n    on_hand:it.on_hand_qty,unit:it.unit,value_at_risk:it.value_at_cost,days_on_hand:it.days_on_hand,clearance_low:lo,clearance_high:hi};}\nfunction rankedSellable(){\n  return inv.map(function(i){return Object.assign({},i,{status:statusFor(i),disposition:disp(i)});})\n    .filter(function(i){return i.status==='AGING' && i.disposition==='sell';}).sort(function(a,b){return (b.value_at_cost||0)-(a.value_at_cost||0);});}\nlet plan={type:'single_rec'};\nconst count=(r.count && r.count>1)?Math.min(r.count,5):null;\nif(r.intent==='approval') plan={type:'approval'};\nelse if(r.intent==='out_of_scope') plan={type:'out_of_scope'};\nelse if(r.intent==='weather_question') plan={type:'weather'};\nelse if(r.intent==='menu_question') plan={type:'list_menu'};\nelse if(r.intent==='replenishment_question') plan={type:'list_replenish'};\nelse if(r.intent==='inventory_status') plan={type:'list_inventory', alsoMenu:(msg.indexOf('menu')>=0)};\nelse if(notFound) plan={type:'not_found', item:r.item};\nelse if(r.intent==='why_explanation') plan={type:'explain'};\nelse if(count) plan={type:'multi_rec', count:count};\nelse if(target && target.disposition==='discard') plan={type:'discard', item:target.ingredient, days:target.days_on_hand, cat:target.category, safe:safeOf(target)};\nelse if(target && target.disposition==='donate') plan={type:'donate', item:target.ingredient, days:target.days_on_hand, cat:target.category, safe:safeOf(target)};\nelse if(target && target.status==='Fresh' && specialsFor(target.ingredient).length<2) plan={type:'fresh', item:target.ingredient, days:target.days_on_hand};\nelse plan={type:'single_rec'};\nlet recTarget=(plan.type==='single_rec')?(target||rankedSellable()[0]||null):null;\nlet payload={};\nif(plan.type==='multi_rec') payload.specials=rankedSellable().slice(0,plan.count).map(buildSpecial);\nif(plan.type==='list_inventory'){\n  payload.items=inv.map(function(i){return {ingredient:i.ingredient,category:i.category,on_hand:i.on_hand_qty,unit:i.unit,days:i.days_on_hand,status:statusFor(i),value:i.value_at_cost};}).sort(function(a,b){return (b.value||0)-(a.value||0);});\n  if(plan.alsoMenu) payload.menu=menu.map(function(x){return {dish:x.dish,price:x.menu_price};});}\nif(plan.type==='list_menu') payload.menu=menu.map(function(x){return {dish:x.dish,price:x.menu_price,category:x.category,plate:x.plate_cost};});\nif(plan.type==='list_replenish') payload.items=repl.map(function(x){var iv=inv.find(function(i){return i.ingredient===x.ingredient;})||{};\n  return {ingredient:x.ingredient,on_hand:(iv.on_hand_qty!=null?iv.on_hand_qty:'-'),unit:(iv.unit||''),next_delivery:x.next_delivery,cadence:x.standing_days};}).sort(function(a,b){return String(a.next_delivery).localeCompare(String(b.next_delivery));});\nif(plan.type==='explain'){ if(target){\n  payload.t={ingredient:target.ingredient,days:target.days_on_hand,status:target.status,disposition:target.disposition,value:target.value_at_cost,on_hand:target.on_hand_qty,unit:target.unit,safe:safeOf(target),specials:specialsFor(target.ingredient).length}; } }\nlet grounded_context=null;\nif(plan.type==='single_rec' && recTarget){\n  var dish=plateOf(dishFor(recTarget.ingredient)); var ru=ruleOf(recTarget.category); var iSp=specialsFor(recTarget.ingredient);\n  var rp=repl.find(function(x){return x.ingredient===recTarget.ingredient;}); var safeLeft=(safeOf(recTarget)||0)-(Number(recTarget.days_on_hand)||0);\n  var bp=pickPrice(recTarget.ingredient);\n  grounded_context={today:D.today,day_of_week:D.day_of_week,tonight_weather:weather,top_item:recTarget,dish:dish,\n    must_clear_by:Math.max(0,safeLeft)+' day(s) safe shelf life left; next '+recTarget.ingredient+' delivery '+(rp?rp.next_delivery:'n/a'),\n    past_specials_for_item:iSp,category_rules:ru,channels:channels,thin_history:(iSp.length<2),bandit_price:bp};}\nvar rec_id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);\nvar sys = grounded_context ? \"You are PrepSense's recommendation engine. GROUNDED CONTEXT gives top_item, its dish + plate cost, that item's own past_specials, tonight_weather, channels, category_rules, must_clear_by, thin_history, and bandit_price (a price chosen by a reinforcement-learning price policy). Recommend ONE runnable special. Output json only: {dish, special_price, portion_oz, channel, projected_clearance_low_pct, projected_clearance_high_pct, rationale, citations:[{claim,value}], value_at_risk}. IF bandit_price is present you MUST set special_price to bandit_price.price, and your rationale should note the policy chose it (mode 'exploit' = best proven price; mode 'explore' = testing an under-tried price). IF thin_history is true (fewer than 2 past runs), be explicit about low confidence: report the best-known price honestly without claiming an optimized revenue tradeoff, and say plainly that there isn't enough history yet to compare prices. IF thin_history is false (2 or more past runs), you may reason about the revenue-vs-clearance tradeoff across the price points in past_specials_for_item and recommend the price that maximizes total revenue while keeping clearance high. Use ONLY numbers in GROUNDED CONTEXT; every number in rationale must also appear in citations. INTERPRET history, never forecast. tonight_weather is for choosing comparable past nights only. If thin_history is true and no bandit_price, set clearance bounds null. Prefer in-store; add DoorDash only to clear volume before must_clear_by. Rationale = 3-4 plain sentences. Respond with ONLY a JSON object - no code fences.\" : 'Reply with {}';\nvar usr = grounded_context ? JSON.stringify(grounded_context) : '{}';\nreturn [{ json:{ plan, payload, grounded_context, weather, rec_id, system:sys, user:usr } }];"
+      },
+      "id": "72f4dd19-1eb6-4f21-8d5d-9d4f0e96b147",
+      "name": "Build recommendation request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1680,
+        672
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.user }}",
+        "options": {
+          "systemMessage": "={{ $json.system }}"
+        }
+      },
+      "id": "c3537aa1-618a-4f66-aea7-7503e79a618f",
+      "name": "Recommendation agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -1104,
+        672
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "id": "b98675ea-5d45-46b3-ab63-e3fc2fcefa14",
+      "name": "Model · recommendation (gpt-5.4-mini)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1104,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "function PJ(s){if(s==null)return null;if(typeof s==='object')return s;s=String(s).trim().replace(/^```(json)?/i,'').replace(/```$/,'').trim();try{return JSON.parse(s);}catch(e){}var a=s.indexOf('{'),b=s.lastIndexOf('}');if(a>=0&&b>a){try{return JSON.parse(s.slice(a,b+1));}catch(e){}}return null;}\nconst prr=$('Build recommendation request').first().json;\nconst plan=prr.plan, ctx=prr.grounded_context, payload=prr.payload, weather=prr.weather, rec_id=prr.rec_id;\nvar rec=PJ((($json.output!=null)?$json.output:($json.text!=null?$json.text:'')));\nlet grounding_pass=true, safety_pass=true; const reasons=[];\nif(plan.type!=='single_rec'){ return [{ json:{ plan, payload, weather, rec_id, rec:null, grounding_pass, safety_pass, reasons, grounded_context:ctx } }]; }\nif(!rec){ grounding_pass=false; safety_pass=false; reasons.push('unparseable recommendation'); }\nelse{\n  if(ctx && ctx.bandit_price && ctx.bandit_price.price!=null) rec.special_price=ctx.bandit_price.price;\n  const floor=parseFloat(String((ctx&&ctx.category_rules?ctx.category_rules.margin_floor:'0')||'0').replace('%',''))/100;\n  const plate=(ctx&&ctx.dish)?parseFloat(ctx.dish.plate_cost):null;\n  if(plate!=null && rec.special_price!=null){ const mg=(rec.special_price-plate)/rec.special_price; if(mg<floor){ safety_pass=false; reasons.push('price below margin floor'); } }\n  if(ctx&&ctx.top_item && String(ctx.top_item.status||'').startsWith('PAST')){ safety_pass=false; reasons.push('item past safe age'); }\n}\nreturn [{ json:{ plan, payload, weather, rec_id, rec, grounding_pass, safety_pass, reasons, grounded_context:ctx } }];"
+      },
+      "id": "15e051f6-876b-4148-bf08-c3da4eaccf00",
+      "name": "Guardrails",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -832,
+        672
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const g=$json;\nreturn [{ json:{ ...g, system:\"You are an independent evaluator. You did NOT write the recommendation. Given GROUNDED CONTEXT and a recommendation json, score it. Output json only: {grounding_pass:bool, safety_pass:bool, specificity_pass:bool, chargeable_score:1..5, helpful_score:1..5, hard_fail:bool, reasons:[string]}. grounding_pass=false if ANY number anywhere in the recommendation — including the rationale text, projected_clearance_low_pct, and projected_clearance_high_pct — cannot be directly tied to a number present in GROUNDED CONTEXT (e.g. past clearance_pct values, special_price values, bandit_price stats). If thin_history is true and past_specials_for_item has fewer than 2 entries, projected_clearance_low_pct and projected_clearance_high_pct MUST be null — any non-null clearance range in that case is an automatic grounding_pass=false. safety_pass=false if it sells a past-safe item, prices below margin floor, or exceeds max markdown. hard_fail=true if grounding_pass or safety_pass is false. Be strict. Respond with ONLY a JSON object - no code fences.\", user:JSON.stringify({context:g.grounded_context, recommendation:g.rec}) } }];"
+      },
+      "id": "5e331cb5-0221-4484-9c51-bf8ce46caa89",
+      "name": "Build judge request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -672,
+        672
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.user }}",
+        "options": {
+          "systemMessage": "={{ $json.system }}"
+        }
+      },
+      "id": "da266007-2c58-4dcc-b66c-102c2bb3efde",
+      "name": "LLM judge",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -448,
+        672
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "id": "7669a8b0-350c-4f3c-91bb-2ed37553cd7d",
+      "name": "Model · judge (gpt-4o)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -448,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "function PJ(s){if(s==null)return null;if(typeof s==='object')return s;s=String(s).trim().replace(/^```(json)?/i,'').replace(/```$/,'').trim();try{return JSON.parse(s);}catch(e){}var a=s.indexOf('{'),b=s.lastIndexOf('}');if(a>=0&&b>a){try{return JSON.parse(s.slice(a,b+1));}catch(e){}}return null;}\n\nconst g=$('Guardrails').first().json;\nconst plan=g.plan||{type:'single_rec'}, payload=g.payload||{}, ctx=g.grounded_context, rec_id=g.rec_id;\nconst weather=($('Build recommendation request').first().json.weather)||{};\nvar judge=(PJ((($json.output!=null)?$json.output:($json.text!=null?$json.text:'')))||{});\nconst ok={grounding_pass:true,safety_pass:true,hard_fail:false};\nfunction I(msg){return {reply_type:'info',message:msg,trust:ok,output:msg,rec_id:rec_id};}\nfunction R(msg){return {reply_type:'refusal',message:msg,trust:ok,output:msg,rec_id:rec_id};}\nlet out;\nif(plan.type==='out_of_scope') out=I(\"I help with this restaurant's inventory, menu, pricing, specials and replenishment. Try: 'What should I run tonight?', 'What's on the menu?', or 'What should I replenish soon?'\");\nelse if(plan.type==='weather') out=I(\"Weather isn't a forecast input for me - I never predict demand from it. I use it to pick which past nights are fair comparisons. Tonight is \"+(weather.label||'unknown')+(weather.temp_f!=null?(', '+Math.round(weather.temp_f)+'F'):'')+\". Your strongest salmon specials ran on clear Fridays, so those are apt tonight; on a stormy night I'd lean on rainy-night history instead.\");\nelse if(plan.type==='not_found') out=R('I don\\'t see \"'+plan.item+'\" in tonight\\'s inventory or on the menu. Want me to look at what\\'s actually aging instead?');\nelse if(plan.type==='discard') out=R(\"That \"+plan.item+\" is \"+plan.days+\" days old - well past the \"+plan.safe+\"-day safe window for \"+String(plan.cat||'').toLowerCase()+\". It is NOT fit for staff meal or donation either; both still feed a person. Discard it and log the loss. Do not sell or serve it.\");\nelse if(plan.type==='donate') out=R(\"That \"+plan.item+\" is \"+plan.days+\" days old - past the \"+plan.safe+\"-day safe-to-sell window for \"+String(plan.cat||'').toLowerCase()+\", so you can't sell it. It's still inside the staff-meal / donation window today, so route it there. Don't put it on the menu.\");\nelse if(plan.type==='fresh') out=I(plan.item+\" isn't aging yet (\"+plan.days+\" day(s) on hand) and has little or no special history, so I won't invent a clearance number. I can pitch it as a judgment-call experiment, but tonight's urgent item is the one actually at risk in the walk-in. Want that pick instead?\");\nelse if(plan.type==='list_menu'){ var L=(payload.menu||[]).map(function(x){return '• '+x.dish+' - $'+x.price+' ('+x.category+')';}).join('\\n'); out=I(\"Menu (\"+(payload.menu||[]).length+\" dishes):\\n\\n\"+L); }\nelse if(plan.type==='list_inventory'){ var L=(payload.items||[]).map(function(i){return '• '+i.ingredient+': '+i.on_hand+' '+i.unit+', day '+i.days+' - '+i.status+(i.value!=null?(' ($'+i.value+' at cost)'):'');}).join('\\n'); var mm=''; if(payload.menu){ mm='\\n\\nMenu ('+payload.menu.length+' dishes): '+payload.menu.map(function(x){return x.dish;}).join(', '); } out=I(\"Tonight's inventory - most $ at risk first:\\n\\n\"+L+mm); }\nelse if(plan.type==='list_replenish'){ var L=(payload.items||[]).map(function(i){return '• '+i.ingredient+': '+i.on_hand+' '+i.unit+' on hand - next delivery '+i.next_delivery+' ('+i.cadence+')';}).join('\\n'); out=I(\"Replenishment schedule - soonest delivery first:\\n\\n\"+L); }\nelse if(plan.type==='multi_rec'){ var sp=payload.specials||[]; var L=sp.map(function(s,k){ var clr=(s.clearance_low!=null)?(s.clearance_low+'-'+s.clearance_high+'% past clearance'):'judgment call (thin history)'; var mo=s.bandit_mode?(' ['+s.bandit_mode+']'):''; return (k+1)+'. '+s.dish+' - $'+s.special_price+mo+' ('+s.portion_oz+' oz). '+s.on_hand+' '+s.unit+' aging, $'+s.value_at_risk+' at risk. '+clr+'.'; }).join('\\n\\n'); out=I(\"Top \"+sp.length+\" specials to run tonight, ranked by $ at risk (price set by the learning policy):\\n\\n\"+L); }\nelse if(plan.type==='explain'){ var t=payload.t; if(!t){ out=I(\"Which item would you like me to explain? For example: 'why is the salmon flagged?'\"); } else { var within=(t.disposition==='sell'); var head=t.ingredient+\" is flagged as an aging item - \"+t.on_hand+\" \"+t.unit+\" at day \"+t.days+(within?(\", still inside its \"+t.safe+\"-day safe-to-sell window\"):(\", past its \"+t.safe+\"-day safe window\"))+\", $\"+t.value+\" at risk.\"; var body2=within?\" Quality-wise it's fine to sell tonight - it's flagged because of the money at risk, not because anything is wrong with it. Did you mean why it's urgent to move, or a freshness concern? I can dig into either.\":\" It can no longer be sold safely.\"; out=I(head+body2); } }\nelse if(plan.type==='approval'){\n  var br=$('Build recommendation request').first().json;\n  var logResult; try{ logResult=$('Log to Supabase').first().json; }catch(e){ logResult={}; }\n  if(logResult.logged==='approved' && logResult.approved_row){\n    var row=logResult.approved_row;\n    out=I(\"Locked in - \"+row.dish+\" at $\"+row.price+\". Approved and logged.\");\n  } else if(logResult.logged==='no_pending_found'){\n    out=I(\"I don't have a pending recommendation to approve right now. Ask me what to run tonight first, then approve it.\");\n  } else {\n    out=I(\"Approved - logged.\");\n  }\n}\nelse {\n  var grounding=(g.grounding_pass!==false)&&(judge.grounding_pass!==false);\n  var safety=(g.safety_pass!==false)&&(judge.safety_pass!==false);\n  var hard_fail=(judge.hard_fail===true)||!grounding||!safety;\n  var trust={grounding_pass:grounding,safety_pass:safety,chargeable_score:(judge.chargeable_score!=null?judge.chargeable_score:null),helpful_score:(judge.helpful_score!=null?judge.helpful_score:null),hard_fail,reasons:[].concat(g.reasons||[],judge.reasons||[])};\n  var rec=g.rec;\n  if(!rec) out={reply_type:'refusal',message:'I could not produce a grounded recommendation.',trust,rec_id:rec_id};\n  else if(rec.special_price==null && rec.dish) out={reply_type:'refusal',message:(rec.rationale||'Routing per safe-age rules.'),trust,rec_id:rec_id};\n  else if(hard_fail){\n   var onlyClearanceIssue = trust.reasons.length>0 && trust.reasons.every(function(rsn){\n  return /clearance/i.test(rsn);\n});\n    if(onlyClearanceIssue && rec && rec.dish && rec.special_price!=null){\n      rec.projected_clearance_low_pct=null;\n      rec.projected_clearance_high_pct=null;\n      if(ctx&&ctx.top_item) rec.ingredient=ctx.top_item.ingredient;\n      var bmode2=(ctx&&ctx.bandit_price)?ctx.bandit_price.mode:null;\n      var safeTrust=Object.assign({},trust,{hard_fail:false,grounding_pass:true});\n      out={reply_type:'recommendation',message:\"Here's a starting point - limited history on this one:\",recommendation:rec,trust:safeTrust,rec_id:rec_id,bandit_mode:bmode2};\n      var mtag2=bmode2?(' · price policy: '+bmode2):'';\n      out.output='**'+rec.dish+' - $'+rec.special_price+'**  ('+rec.portion_oz+' oz, '+rec.channel+')'+mtag2+'\\n\\n'+rec.rationale+'\\n\\n_clearance: not enough history to project · ~$'+rec.value_at_risk+' at risk_\\n\\n'+(rec.citations||[]).map(function(c){return '• '+c.claim+': '+c.value;}).join('\\n')+'\\n\\nGrounded OK · Safe OK · Judge passed (clearance omitted - thin history)';\n    } else {\n      out={reply_type:'refusal',message:'Blocked by guardrails: '+trust.reasons.join('; '),trust,rec_id:rec_id};\n    }\n  }\n  else { if(ctx&&ctx.top_item) rec.ingredient=ctx.top_item.ingredient; var bmode=(ctx&&ctx.bandit_price)?ctx.bandit_price.mode:null;\n   out={reply_type:'recommendation',message:\"Here's the one worth acting on tonight:\",recommendation:rec,trust,rec_id:rec_id,bandit_mode:bmode,grounded_context:ctx};\n    var clr=(rec.projected_clearance_low_pct!=null)?(rec.projected_clearance_low_pct+'-'+rec.projected_clearance_high_pct+'% projected clearance'):'clearance: judgment call';\n    var mtag=bmode?(' · price policy: '+bmode):'';\n    out.output='**'+rec.dish+' - $'+rec.special_price+'**  ('+rec.portion_oz+' oz, '+rec.channel+')'+mtag+'\\n\\n'+rec.rationale+'\\n\\n_'+clr+' · ~$'+rec.value_at_risk+' at risk_\\n\\n'+(rec.citations||[]).map(function(c){return '• '+c.claim+': '+c.value;}).join('\\n')+'\\n\\nGrounded '+(trust.grounding_pass?'OK':'X')+' · Safe '+(trust.safety_pass?'OK':'X')+' · Judge '+(trust.hard_fail?'blocked':'passed'); }\n}\nif(out.output==null) out.output=out.message;\nreturn [{ json: out }];"
+      },
+      "id": "9b356370-1e36-460d-bec5-c0dc75eebd2e",
+      "name": "Assemble response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        672
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "114558dc-61ad-4e30-bcec-408c66316f70",
+      "name": "Respond to owner",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -4576,
+        640
+      ],
+      "id": "e3c499a7-edc7-46d8-b09b-951250686df0",
+      "name": "Extract from File",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json;\nconst rows = $('Extract from File').all().map(r => r.json);\n\nconst inventory = rows.map(r => ({\n  ingredient: r.ingredient,\n  category: r.category,\n  on_hand_qty: parseFloat(r.on_hand_qty),\n  unit: r.unit,\n  days_on_hand: parseInt(r.days_on_hand),\n  value_at_cost: parseFloat(r.value_at_cost),\n  status: r.status,\n  thr: parseInt(r.aging_thresh_d),\n  safe: parseInt(r.safe_max_d),\n  shelf: parseInt(r.shelf_life_d)\n}));\n\nreturn [{\n  json: {\n    today: cfg.today,\n    day_of_week: cfg.day_of_week,\n    restaurant: cfg.restaurant,\n    inventory,\n    specials: cfg.specials,\n    menu: cfg.menu,\n    rules: cfg.rules,\n    channels: cfg.channels,\n    replenishment: cfg.replenishment\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2064,
+        672
+      ],
+      "id": "c6d260b5-f604-478c-92af-a2fec9c54ac3",
+      "name": "Load restaurant data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $('Parse intent').first().json;\nconst br = $('Build recommendation request').first().json;\nconst plan = br.plan || {};\nconst SUPABASE_URL = 'https://xwzurlnigyozbtqwsfvn.supabase.co';\nconst SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3enVybG5pZ3lvemJ0cXdzZnZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MzMzNDgsImV4cCI6MjA5NzQwOTM0OH0._E6TqWErHfx2C7MjIG5LBYjrO0SDUEfsrg0hcoc9Tzc';\n\nasync function supaFetch(path, method, body) {\n  const options = {\n    method: method,\n    url: SUPABASE_URL + path,\n    headers: {\n      'apikey': SUPABASE_KEY,\n      'Authorization': 'Bearer ' + SUPABASE_KEY,\n      'Content-Type': 'application/json',\n      'Prefer': 'return=representation'\n    },\n    json: true\n  };\n  if (body) options.body = body;\n  return await this.helpers.httpRequest(options);\n}\n\n// CASE 1 — a new recommendation was just built\nif (plan.type === 'single_rec' && br.grounded_context && br.grounded_context.top_item) {\n  const ing = br.grounded_context.top_item.ingredient;\n  const dish = (br.grounded_context.dish && br.grounded_context.dish.dish) || ing;\n  const bp = br.grounded_context.bandit_price;\n  const price = bp ? bp.price : null;\n\n  await supaFetch.call(this, '/rest/v1/approved_specials', 'POST', {\n    ingredient: ing,\n    dish: dish,\n    price: price,\n    rec_id: br.rec_id,\n    status: 'pending'\n  });\n\n  return [{ json: { ...br, logged: 'pending' } }];\n}\n\n// CASE 2 — operator approved\nif (plan.type === 'approval') {\n  const rows = await supaFetch.call(\n    this,\n    '/rest/v1/approved_specials?status=eq.pending&order=approved_at.desc&limit=1',\n    'GET'\n  );\n\n  if (rows && rows.length > 0) {\n    const row = rows[0];\n    const patchResult = await supaFetch.call(this, '/rest/v1/approved_specials?id=eq.' + row.id, 'PATCH', {\n      status: 'approved'\n    });\n    return [{ json: { ...br, approved_row: row, patch_result: patchResult, logged: 'approved' } }];\n  } else {\n    return [{ json: { ...br, logged: 'no_pending_found' } }];\n  }\n}\n\n// CASE 3 — pass through unchanged\nreturn [{ json: br }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1456,
+        672
+      ],
+      "id": "7f6f3768-f215-4bbb-a9d5-a1ad3951da46",
+      "name": "Log to Supabase"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6a06a2a7-0b2d-49b3-b9b6-14b31020a35b",
+              "leftValue": "={{ $json.report_type }}",
+              "rightValue": "outcome",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -3632,
+        480
+      ],
+      "id": "906f8e5f-8b3c-4bef-8edf-a268e10c94d8",
+      "name": "Is Outcome Report"
+    },
+    {
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json;\nconst rowId = cfg.rec_row_id;\nconst clearancePct = cfg.clearance_pct;\n\nconst SUPABASE_URL = 'https://xwzurlnigyozbtqwsfvn.supabase.co';\nconst SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3enVybG5pZ3lvemJ0cXdzZnZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MzMzNDgsImV4cCI6MjA5NzQwOTM0OH0._E6TqWErHfx2C7MjIG5LBYjrO0SDUEfsrg0hcoc9Tzc';\n\nasync function supaFetch(path, method, body) {\n  const options = {\n    method: method,\n    url: SUPABASE_URL + path,\n    headers: {\n      'apikey': SUPABASE_KEY,\n      'Authorization': 'Bearer ' + SUPABASE_KEY,\n      'Content-Type': 'application/json',\n      'Prefer': 'return=representation'\n    },\n    json: true\n  };\n  if (body) options.body = body;\n  return await this.helpers.httpRequest(options);\n}\n\nif (!rowId || clearancePct == null) {\n  return [{ json: { error: 'missing rec_row_id or clearance_pct', report_failed: true } }];\n}\n\n// 1. Fetch the approved row to get ingredient + price\nconst rows = await supaFetch.call(this, '/rest/v1/approved_specials?id=eq.' + rowId, 'GET');\nif (!rows || rows.length === 0) {\n  return [{ json: { error: 'approved row not found', report_failed: true } }];\n}\nconst row = rows[0];\nconst price = Number(row.price);\nconst reward = (clearancePct / 100) * price;\n\n// 2. Update approved_specials with actual outcome\nawait supaFetch.call(this, '/rest/v1/approved_specials?id=eq.' + rowId, 'PATCH', {\n  actual_clearance_pct: clearancePct\n});\n\n// 3. Upsert into price_bandit (insert or update trials/reward_sum)\nconst existingArm = await supaFetch.call(\n  this,\n  '/rest/v1/price_bandit?ingredient=eq.' + encodeURIComponent(row.ingredient) + '&price=eq.' + price,\n  'GET'\n);\n\nlet banditResult;\nif (existingArm && existingArm.length > 0) {\n  const arm = existingArm[0];\n  banditResult = await supaFetch.call(this, '/rest/v1/price_bandit?id=eq.' + arm.id, 'PATCH', {\n    trials: (Number(arm.trials) || 0) + 1,\n    reward_sum: (Number(arm.reward_sum) || 0) + reward\n  });\n} else {\n  banditResult = await supaFetch.call(this, '/rest/v1/price_bandit', 'POST', {\n    ingredient: row.ingredient,\n    price: price,\n    trials: 1,\n    reward_sum: reward\n  });\n}\n\nconst msg = \"Logged - \" + row.dish + \" at $\" + price + \" cleared \" + clearancePct + \"%. Reward updated: \" + (Math.round(reward * 100) / 100) + \". This price point now has better data for future recommendations.\";\n\nreturn [{ json: {\n  reply_type: 'info',\n  message: msg,\n  output: msg,\n  dish: row.dish,\n  ingredient: row.ingredient,\n  price: price,\n  clearance_pct: clearancePct,\n  reward: Math.round(reward * 100) / 100,\n  bandit_updated: true\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3296,
+        384
+      ],
+      "id": "9d8d7582-ee81-4143-9fa5-0fd7ab44eebb",
+      "name": "Process Outcome Report"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://xwzurlnigyozbtqwsfvn.supabase.co/rest/v1/eval_results",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "xxxxxx"
+            },
+            {
+              "name": "Authorization",
+              "value": "xxxxx"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Build recommendation request').isExecuted ? JSON.stringify({\n  \"ingredient\": $('Build recommendation request').first().json.grounded_context?.top_item?.ingredient \n    || $('Build recommendation request').first().json.plan?.item \n    || $('Build recommendation request').first().json.plan?.type \n    || 'n/a',\n  \"overall_score\": $('Assemble response').first().json.trust?.chargeable_score || 0,\n  \"pass\": !$('Assemble response').first().json.trust?.hard_fail,\n  \"groundedness\": $('Assemble response').first().json.trust?.grounding_pass || false,\n  \"safety\": $('Assemble response').first().json.trust?.safety_pass || false,\n  \"actionability\": $('Assemble response').first().json.trust?.specificity_pass || false,\n  \"issues\": $('Assemble response').first().json.trust?.reasons || []\n}) : JSON.stringify({\"ingredient\": \"outcome_report\", \"overall_score\": 0, \"pass\": true, \"groundedness\": true, \"safety\": true, \"actionability\": true, \"issues\": []}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        192,
+        480
+      ],
+      "id": "1f966cfb-f17f-4946-8645-f2e26e4d884c",
+      "name": "Log Eval Scores"
+    },
+    {
+      "parameters": {
+        "url": "https://xwzurlnigyozbtqwsfvn.supabase.co/rest/v1/price_bandit?select=ingredient,price,trials,reward_sum",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "xxxx"
+            },
+            {
+              "name": "Authorization",
+              "value": "xxxx"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1872,
+        672
+      ],
+      "id": "cc730dbb-a1cc-4fb3-885f-6b0e33ad5c2e",
+      "name": "Fetch Price Bandit Data"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Chat webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Is Outcome Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weather (Open-Meteo)": {
+      "main": [
+        [
+          {
+            "node": "Build router request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build router request": {
+      "main": [
+        [
+          {
+            "node": "Router agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Router agent": {
+      "main": [
+        [
+          {
+            "node": "Parse intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse intent": {
+      "main": [
+        [
+          {
+            "node": "Load restaurant data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build recommendation request": {
+      "main": [
+        [
+          {
+            "node": "Log to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recommendation agent": {
+      "main": [
+        [
+          {
+            "node": "Guardrails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrails": {
+      "main": [
+        [
+          {
+            "node": "Build judge request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build judge request": {
+      "main": [
+        [
+          {
+            "node": "LLM judge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM judge": {
+      "main": [
+        [
+          {
+            "node": "Assemble response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assemble response": {
+      "main": [
+        [
+          {
+            "node": "Respond to owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model · router (gpt-4o)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Router agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model · recommendation (gpt-5.4-mini)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Recommendation agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model · judge (gpt-4o)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LLM judge",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load restaurant data": {
+      "main": [
+        [
+          {
+            "node": "Fetch Price Bandit Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to owner": {
+      "main": [
+        [
+          {
+            "node": "Log Eval Scores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Supabase": {
+      "main": [
+        [
+          {
+            "node": "Recommendation agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Outcome Report": {
+      "main": [
+        [
+          {
+            "node": "Process Outcome Report",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Weather (Open-Meteo)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Outcome Report": {
+      "main": [
+        [
+          {
+            "node": "Respond to owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Price Bandit Data": {
+      "main": [
+        [
+          {
+            "node": "Build recommendation request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "75dabab3-4218-46c3-9309-1677d0220547",
+  "meta": {
+    "instanceId": "445f8863cceceb262797d3bb78596f0fffd3c7f832b3c52f69ebd65404dcd006"
+  },
+  "nodeGroups": [],
+  "id": "x6PlxEdxfKuwBWCG",
+  "tags": []
+}
