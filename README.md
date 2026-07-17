@@ -151,6 +151,8 @@ I would also add a structured onboarding flow that helps restaurant owners uploa
 | Eval logging | Supabase insights table |
 
 ---
+URL for Website:
+https://praneethareddyvaddeman-cmd.github.io/Prepsense-ai/UI.html
 
 ## Build Log
 
