@@ -160,5 +160,5 @@ https://praneethareddyvaddeman-cmd.github.io/Prepsense-ai/UI.html
 - **v2**: Added LLM Judge grounding checks and tiered confidence logic
 - **v3**: RLHF approval loop with explicit rec_id tracking
 - **v4**: Price bandit layer, weather grounding, Router agent for intent classification
-- **v5**: Guardrails node, eval score logging, 31 real cases logged
+- **v5**: Guardrails node, eval score logging, 41 real cases logged
 - **v8 (current)**: Full agentic pipeline with outcome reporting loop, hallucination catch documented
